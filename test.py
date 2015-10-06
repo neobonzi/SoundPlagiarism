@@ -1,10 +1,14 @@
-from pyAudioAnalysis import audioFeatureExtraction
-from pyAudioAnalysis import audioBasicIO
-import scipy.io.wavfile
+import scipy
+import scipy.io.wavfile as wav
+import timeside
+from timeside.core import get_processor
+import matplotlib.pyplot as plt
 
 def main():
-    [Fs, x] = audioBasicIO.readAudioFile("input/piano2.wav"); 
-    F = audioFeatureExtraction.stFeatureExtraction(x, Fs, Fs, Fs)
-    print(F)
-
+    decoder = get_processor('file_decoder')(uri="input/piano2.wav")
+    spectrogram = get_processor('spectrogram_analyzer')(input_blocksize=2048, input_stepsize=1024)
+    pipe = (decoder | spectrogram)
+    pipe.run()
+    result = spectrogram.results['spectrogram_analyzer']
+    result.data.shape
 main()
