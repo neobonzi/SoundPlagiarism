@@ -1,12 +1,14 @@
-import urllib
+import urllib3.contrib.pyopenssl
+#import urllib
 import soundcloud
 import os 
 import datetime
 
+urllib3.contrib.pyopenssl.inject_into_urllib3()
 CLIENT_ID = os.environ["SOUNDCLOUD_CID"]
 DOWNLOAD_PATH = os.getcwd() + '/Downloads/' 
-#GENRES = ['piano', 'orchestra', 'opera', 'chorus', 'rock', 'country', 'pop', 'techno', 'hip-hop', 'reggae', 'jazz', 'latin']
-GENRES = ['rock']
+GENRES = ['piano', 'orchestra', 'opera', 'chorus', 'rock', 'country', 'pop', 'techno', 'hip-hop', 'reggae', 'jazz', 'latin']
+#GENRES = ['rock']
 
 def fetch_urls(track) :
    return track.download_url + '?client_id=' + CLIENT_ID
