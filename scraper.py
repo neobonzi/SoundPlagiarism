@@ -32,9 +32,8 @@ for genre in GENRES :
          if ( track.downloadable ) :
             download_url = fetch_urls(track)
             download_file.write(download_url + '\n')
-            filename = genre_path + 'temp.mp3'
-            urllib.urlretrieve(url=download_url, filename=filename)
-            #process here
+            #filename = genre_path + 'temp.mp3'
+            #urllib.urlretrieve(url=download_url, filename=filename)
       try:
          tracks = client.get(tracks.next_href, genres=genre, order='created_at', limit=page_size, linked_partitioning=1)
       except Exception, e:
