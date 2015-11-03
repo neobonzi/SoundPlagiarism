@@ -1,6 +1,8 @@
 import argparse
 import eyed3
+import string
 import datetime
+import random
 from tqdm import *
 from pymongo import MongoClient
 from pydub import AudioSegment
@@ -22,8 +24,9 @@ def storeGrains(grains):
         storedCount += 1
 
     print("Successfully stored " + str(storedCount) + " grains")
+    client.close()
 
-def chopSound(source, grainSize, destination):
+def chopSound(source, grainSize, destination, genre):
     grains = []
     if (source.endswith('.mp3')):
         mp3Audio = AudioSegment.from_mp3(source)
@@ -48,19 +51,20 @@ def chopSound(source, grainSize, destination):
         
         if (audioTag.title is None):
             audioTag.title = u"None"
-        grainName = audioTag.title + '_' + str(audioIndex) + '-' + str(grainEnd) + '.wav'
-        tags = {"title": audioTag.title, "artist": audioTag.artist} 
+        prefix = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
+        grainName = prefix + '_' + str(audioIndex) + '-' + str(grainEnd) + '.wav'
+        tags = {"title": audioTag.title, "artist": audioTag.artist, "genre": genre} 
         
         if(destination is not None):
             sample.export(destination + '/' + grainName, format="wav",
                 tags=tags, bitrate=str(audio.frame_rate))
         
         grains.append(buildGrainMongoObject(destination + '/' + grainName, 
-            audioTag.title, audioTag.artist, grainSize, audio.frame_rate, sample.frame_count()))
+            audioTag.title, audioTag.artist, grainSize, audio.frame_rate, sample.frame_count(), genre))
     
     return grains
 
-def buildGrainMongoObject(fileName, title, artist, length, sampleRate, frameCount):
+def buildGrainMongoObject(fileName, title, artist, length, sampleRate, frameCount, genre):
     returnObject = {}
     if (fileName != None):
         returnObject["file"] = fileName
@@ -80,6 +84,8 @@ def buildGrainMongoObject(fileName, title, artist, length, sampleRate, frameCoun
     if (frameCount != None):
         returnObject["frameCount"] = str(frameCount)
 
+    if (genre != None):
+        returnObject["genre"] = str(genre)
     returnObject["processed"] = False
     returnObject["date"] = datetime.datetime.utcnow()
     return returnObject

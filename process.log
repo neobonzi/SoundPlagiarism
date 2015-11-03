@@ -1,0 +1,29 @@
+ffmpeg version N-76045-g97be5d4 Copyright (c) 2000-2015 the FFmpeg developers
+  built with gcc 4.8 (Ubuntu 4.8.4-2ubuntu1~14.04)
+  configuration: --extra-libs=-ldl --prefix=/opt/ffmpeg --enable-avresample --disable-debug --enable-nonfree --enable-gpl --enable-version3 --enable-libopencore-amrnb --enable-libopencore-amrwb --disable-decoder=amrnb --disable-decoder=amrwb --enable-libpulse --enable-libdcadec --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libfdk-aac --enable-libvorbis --enable-libmp3lame --enable-libopus --enable-libvpx --enable-libspeex --enable-libass --enable-avisynth --enable-libsoxr --enable-libxvid --enable-libvo-aacenc --enable-libvidstab
+  libavutil      55.  4.100 / 55.  4.100
+  libavcodec     57.  6.100 / 57.  6.100
+  libavformat    57.  4.100 / 57.  4.100
+  libavdevice    57.  0.100 / 57.  0.100
+  libavfilter     6. 11.100 /  6. 11.100
+  libavresample   3.  0.  0 /  3.  0.  0
+  libswscale      4.  0.100 /  4.  0.100
+  libswresample   2.  0.100 /  2.  0.100
+  libpostproc    54.  0.100 / 54.  0.100
+Guessed Channel Layout for  Input Stream #0.0 : stereo
+Input #0, aiff, from 'tmpDownload.mp3':
+  Duration: 00:01:19.48, start: 0.000000, bitrate: 2117 kb/s
+    Stream #0:0: Audio: pcm_s24be, 44100 Hz, 2 channels, s32 (24 bit), 2116 kb/s
+File 'tmpDownloadMono.mp3' already exists. Overwrite ? [y/N] Not overwriting - exiting
+  0%|          | 0/7618 [00:00<?, ?it/s] 10%|#         | 786/7618 [00:00<00:00, 7851.90it/s] 21%|##        | 1580/7618 [00:00<00:00, 7891.04it/s] 31%|###1      | 2396/7618 [00:00<00:00, 7979.22it/s] 42%|####2     | 3212/7618 [00:00<00:00, 7932.12it/s] 53%|#####2    | 4028/7618 [00:00<00:00, 7923.19it/s] 64%|######3   | 4844/7618 [00:00<00:00, 7955.38it/s] 74%|#######4  | 5660/7618 [00:00<00:00, 7981.49it/s] 85%|########5 | 6481/7618 [00:00<00:00, 8009.21it/s]done downloading file
+Chopping up 152347 mS audio file into 20 mS grains
+Traceback (most recent call last):
+  File "processor.py", line 35, in <module>
+    grainMongoObjects = chopSound("tmpDownloadMono.mp3", 20, "grains", downloadFile[:-4]) 
+  File "/home/ubuntu/SoundPlagiarism/granulizer.py", line 60, in chopSound
+    tags=tags, bitrate=str(audio.frame_rate))
+  File "/usr/local/lib/python2.7/dist-packages/pydub/audio_segment.py", line 461, in export
+    wave_data.close()
+  File "/usr/lib/python2.7/wave.py", line 452, in close
+    self._file.flush()
+IOError: [Errno 28] No space left on device

@@ -43,6 +43,7 @@ def clearData():
     for grain in tqdm(grains):
         os.remove(grain["file"])
         grainEntries.delete_one({"_id" : grain["_id"]})
+    client.close()
 
 def analyzeAllPitch():
     client = MongoClient()
@@ -54,6 +55,7 @@ def analyzeAllPitch():
     for grain in tqdm(query):
         update = {"pitch" : analyzePitch(grain)}
         grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
 
 def analyzePitch(grain):
     s = source(grain["file"], int(grain["sampleRate"]), int(float(grain["frameCount"])))
@@ -62,7 +64,7 @@ def analyzePitch(grain):
     pitch_out = pitch("yin", int(float(grain["frameCount"])), int(float(grain["frameCount"])), samplerate)
     samples, read = s()
     pitchFreq = pitch_out(samples)[0].item() 
-
+    del s 
     return pitchFreq
 
 def analyzeAllZeroCrossingRate():
@@ -77,6 +79,7 @@ def analyzeAllZeroCrossingRate():
     for grain in tqdm(query):
         update = {"zcr" : analyzeZeroCrossingRate(grain)}
         grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
 
 def analyzeZeroCrossingRate(grain):
     blockSize = grain["frameCount"]
@@ -88,6 +91,7 @@ def analyzeZeroCrossingRate(grain):
     (rate, data) = wavfile.read(grain["file"])
     data = numpy.array([data.astype(numpy.float64)]);
     feats = engine.processAudio(data)
+    del data
     return feats["zcr"][0][0]
 
 def analyzeAllSpectralShape():
@@ -105,6 +109,7 @@ def analyzeAllSpectralShape():
                   "skewness" : skewness,
                   "kurtosis" : kurtosis}
         grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
 
 def analyzeSpectralShape(grain):
     blockSize = grain["frameCount"]
@@ -116,6 +121,7 @@ def analyzeSpectralShape(grain):
     (rate, data) = wavfile.read(grain["file"])
     data = numpy.array([data.astype(numpy.float64)]);
     feats = engine.processAudio(data)
+    del data
     return (feats["spectralShape"][0][0], feats["spectralShape"][0][1], feats["spectralShape"][0][2], feats["spectralShape"][0][3])
 
 def analyzeAllEnergy():
@@ -130,6 +136,7 @@ def analyzeAllEnergy():
     for grain in tqdm(query):
         update = {"energy" : analyzeEnergy(grain)}
         grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
 
 def analyzeEnergy(grain):
     blockSize = grain["frameCount"]
@@ -141,6 +148,7 @@ def analyzeEnergy(grain):
     (rate, data) = wavfile.read(grain["file"])
     data = numpy.array([data.astype(numpy.float64)]);
     feats = engine.processAudio(data)
+    del data
     return feats["energy"][0][0] 
 
 def analyzeAllMFCC():
@@ -156,17 +164,19 @@ def analyzeAllMFCC():
         for mfccIndex in range(0, len(mfccs)):
             update = {"mfcc" + format(mfccIndex, '02') : mfccs[mfccIndex]}
             grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
 
 def analyzeMFCC(grain):
     windowSize = int(float(grain["frameCount"]))
-    s = source(grain["file"], int(grain["sampleRate"]), windowSize)
+    s = source(grain["file"], int(grain["sampleRate"]), windowSize - 1)
     sampleRate = s.samplerate
-    p = pvoc(windowSize, windowSize)
+    p = pvoc(windowSize, windowSize - 1)
     m = mfcc(windowSize, 40, 13, s.samplerate)
     samples, read = s()
     spec = p(samples)
     mfcc_out = m(spec)
     mfccs = mfcc_out.tolist()
+    del s
     return mfccs 
 
 def parseArgs():
