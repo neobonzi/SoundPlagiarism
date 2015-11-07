@@ -1,6 +1,8 @@
 import sys
 import argparse
 import os
+from pympler import muppy
+from pympler import summary
 from yaafelib import *
 from aubio import pitch
 from aubio import source, pvoc, mfcc
@@ -164,6 +166,8 @@ def analyzeAllMFCC():
         for mfccIndex in range(0, len(mfccs)):
             update = {"mfcc" + format(mfccIndex, '02') : mfccs[mfccIndex]}
             grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+
+    summary.print_(summary.summarize(muppy.get_objects()))
     client.close()
 
 def analyzeMFCC(grain):
@@ -176,7 +180,6 @@ def analyzeMFCC(grain):
     spec = p(samples)
     mfcc_out = m(spec)
     mfccs = mfcc_out.tolist()
-    del s
     return mfccs 
 
 def parseArgs():
