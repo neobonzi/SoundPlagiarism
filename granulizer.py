@@ -29,16 +29,27 @@ def storeGrains(grains):
 def chopSound(source, grainSize, destination, genre):
     grains = []
     if (source.endswith('.mp3')):
-        mp3Audio = AudioSegment.from_mp3(source)
-        mp3Audio.export("tmp.wav", format="wav")
-        audio = AudioSegment.from_wav("tmp.wav")
+        try:
+            mp3Audio = AudioSegment.from_mp3(source)
+            mp3Audio.export("tmp.wav", format="wav")
+            audio = AudioSegment.from_wav("tmp.wav")
+        except Exception:
+            return None
     else:
         audio = AudioSegment.from_wav(source)
     
-    eyed3AudioFile = eyed3.load(source)
+    try:
+        eyed3AudioFile = eyed3.load(source)
+    except Exception as exc:
+        return None
+        
     audioInfo = eyed3AudioFile.info
     audioTag = eyed3AudioFile.tag
     print("Chopping up " + str(len(audio)) + " mS audio file into " + str(grainSize) + " mS grains")  
+
+    if ((len(audio) / grainSize) > 30000):
+        print("Audio longer than 10 minutes, skipping")
+        return None
 
     for audioIndex in tqdm(xrange(0,len(audio), grainSize)):
         #if the grain would go past the end of the sound file, just take what's left

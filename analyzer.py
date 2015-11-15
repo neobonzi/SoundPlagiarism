@@ -47,6 +47,22 @@ def clearData():
         grainEntries.delete_one({"_id" : grain["_id"]})
     client.close()
 
+def extractFile(grain):
+    return grain["file"];
+
+def analyzePitchSubset(grains):
+    client = MongoClient()
+    db = client.audiograins
+    grainEntries = db.grains
+
+    query = grainEntries.find({ "pitch" : { "$exists" : False }, "file" : { "$in" : map(extractFile, grains)}})
+
+    print("Analyzing Pitch for " + str(query.count()) + " grains")
+    for grain in tqdm(query):
+        update = {"pitch" : analyzePitch(grain)}
+        grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
+
 def analyzeAllPitch():
     client = MongoClient()
     db = client.audiograins
@@ -68,6 +84,20 @@ def analyzePitch(grain):
     pitchFreq = pitch_out(samples)[0].item() 
     del s 
     return pitchFreq
+
+
+def analyzeZeroCrossingRateSubset(grains):
+    client = MongoClient()
+    db = client.audiograins
+    grainEntries = db.grains
+
+    query = grainEntries.find({ "zcr" : { "$exists" : False }, "file" : { "$in" : map(extractFile, grains)}})
+
+    print("Analyzing ZCR for " + str(query.count()) + " grains")
+    for grain in tqdm(query):
+        update = {"zcr" : analyzeZeroCrossingRate(grain)}
+        grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
 
 def analyzeAllZeroCrossingRate():
     client = MongoClient()
@@ -126,6 +156,19 @@ def analyzeSpectralShape(grain):
     del data
     return (feats["spectralShape"][0][0], feats["spectralShape"][0][1], feats["spectralShape"][0][2], feats["spectralShape"][0][3])
 
+def analyzeEnergySubset(grains):
+    client = MongoClient()
+    db = client.audiograins
+    grainEntries = db.grains
+
+    query = grainEntries.find({ "energy" : { "$exists" : False }, "file" : { "$in" : map(extractFile, grains)}})
+
+    print("Analyzing Energy for " + str(query.count()) + " grains")
+    for grain in tqdm(query):
+        update = {"energy" : analyzeEnergy(grain)}
+        grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+    client.close()
+
 def analyzeAllEnergy():
     client = MongoClient()
     db = client.audiograins 
@@ -152,6 +195,22 @@ def analyzeEnergy(grain):
     feats = engine.processAudio(data)
     del data
     return feats["energy"][0][0] 
+
+def analyzeMFCCSubset(grains):
+    client = MongoClient()
+    db = client.audiograins
+    grainEntries = db.grains
+
+    query = grainEntries.find({ "mfcc00" : { "$exists" : False }, "file" : { "$in" : map(extractFile, grains)}})
+
+    print("Analyzing MFCC for " + str(query.count()) + " grains")
+    for grain in tqdm(query):
+        mfccs = analyzeMFCC(grain)
+        for mfccIndex in range(0, len(mfccs)):
+            update = {"mfcc" + format(mfccIndex, '02') : mfccs[mfccIndex]}
+            grainEntries.update_one({"_id": grain["_id"]}, {"$set" : update})
+
+    client.close()
 
 def analyzeAllMFCC():
     client = MongoClient()
