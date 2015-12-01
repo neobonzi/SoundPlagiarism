@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<head>
+<link href='https://fonts.googleapis.com/css?family=Londrina+Shadow' rel='stylesheet' type='text/css'>
+<style>
+body {
+  font-family: helvetica, sans-serif;
+  margin: 0 auto;
+  max-width: 800px;
+  background: #232323;
+}
+form{
+  background-size: cover;
+  position: relative;
+  border-radius: 12px;
+}
+h1 {
+  font-family: 'Londrina Shadow', cursive;
+  text-align: center;
+  font-size: 75px;
+  color: #aaaaaa;
+  margin: 60px 0 0 0;
+}
+h2 {
+  text-align: center;
+  color: #bbbbbb;
+  margin: 0px 0 70px 0;
+}
+p {
+  color: rgba(255,255,255,1);
+  text-align: center;
+  font-family: helvetica, sans-serif;
+}
+table {
+   width: 50%;
+}
+table, th, td {
+   border: 1px solid black;
+   border-collapse: collapse;
+   text-align: center;
+}
+th, td {
+   padding: 5px;
+   text-align: left;
+}
+table tr:nth-child(even) {
+   background-color:#eee;
+}
+table tr:nth-child(odd) {
+   background-color:#fff;
+}
+table th {
+   background-color: white;
+   color: black;
+}
+
+</style>
+
+</head>
+
+<body>
+<h1>Song Categorization</h1>
+<h2>Upload a song (.mp3) to find out its genre!</h2>
+<form enctype="multipart/form-data" action="" method="post">
+  <p>
+     File: <input type="file" name="file">
+     <input type="submit" value="Upload"> 
+  </p>
+</form>
+<br>
+<br>
+<br>
+<table align="center">
+   <tr>
+      <th>Genre</th>
+      <th>Percentage</th>
+   </tr>
+   <tr>
+      <td>Chorus</td>
+      <td></td>
+   </tr>
+   <tr>
+      <td>Rock</td>
+      <td></td>
+   </tr>
+</table>
+</body>
+
+
