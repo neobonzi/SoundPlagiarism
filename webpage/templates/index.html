@@ -74,14 +74,13 @@ table th {
       <th>Genre</th>
       <th>Percentage</th>
    </tr>
-   <tr>
-      <td>Chorus</td>
-      <td></td>
-   </tr>
-   <tr>
-      <td>Rock</td>
-      <td></td>
-   </tr>
+
+   {% for key,value in data.items() %}
+      <tr>
+         <td>{{key}}</td>
+         <td>{{value}}</td>
+      </tr>
+   {% endfor %}
 </table>
 </body>
 

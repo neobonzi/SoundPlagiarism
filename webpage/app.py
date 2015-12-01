@@ -26,7 +26,8 @@ def upload_file():
          file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
          return redirect(url_for('uploaded_file',
                                  filename=filename)) 
-   return render_template('index.html')
+   data = {'jazz': '0','chorus':'24.5', 'rock':'1', 'piano':'67.3'}
+   return render_template('index.html', data=data)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
