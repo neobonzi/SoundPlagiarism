@@ -1,0 +1,8 @@
+*.mp3
+*.wav
+inputGrains/*
+webpage/uploads/*
+webpage/inputGrains/*
+*.pickle
+Downloads/*
+Downloadsbak/*

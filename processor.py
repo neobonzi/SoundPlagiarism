@@ -24,7 +24,7 @@ import subprocess
 import synthesizer
 import urllib
 
-appPath = "/home/neobonzi/Development/SoundPlagiarism/"
+appPath = "/mnt/DataBaby/SoundPlagiarism/"
 downloadFiles = ["chorus.txt", "hip-hop.txt", "latin.txt", "orchestra.txt", "pop.txt", "rock.txt", "country.txt", "jazz.txt", "opera.txt", "piano.txt", "reggae.txt", "techno.txt"]
 downloadsPath = appPath + "Downloads/"
 
@@ -45,7 +45,7 @@ for i in downloadFiles:
             sys.exit()
 filename = appPath + downloadFile[:-4] + "tmpDownload.mp3"
 monoFilename = appPath + downloadFile[:-4] + "tmpDownloadMono.mp3"
-grainsFolder = appPath + 'grains5'
+grainsFolder = appPath + 'grains' + '/' + downloadFile[:-4]
 
 if os.path.exists(filename):
     print("Process in progress")
